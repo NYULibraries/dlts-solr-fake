@@ -34,6 +34,12 @@ function defaultSolrRequestRewriterMiddleware( req, res, next ) {
         'responseHeader.params.wt'             : req.query[ 'wt' ],
     };
 
+    Object.getOwnPropertyNames( query ).forEach( prop => {
+        if ( query[ prop ] === undefined ) {
+            delete query[ prop ];
+        }
+    } );
+
     Object.getOwnPropertyNames( req.query ).forEach( prop => {
         delete req.query[ prop ];
     } );
@@ -45,6 +51,26 @@ function defaultSolrRequestRewriterMiddleware( req, res, next ) {
     next();
 }
 
+function defaultSolrResponseRewriterMilddleware( req, res ) {
+    // Exclude hits that contain search params not include in request
+    const requestSearchParams = Object.getOwnPropertyNames( req.query )
+        .map( ( prop ) => {
+            return prop.replace( /^responseHeader.params./, '' );
+        } ).sort();
+
+    const results = res.locals.data.filter( hit => {
+        const hitSearchParams = Object.getOwnPropertyNames( hit.responseHeader.params ).sort();
+
+        if ( hitSearchParams.length === requestSearchParams.length ) {
+            return true;
+        } else {
+            return false;
+        }
+    } );
+
+    console.log( results );
+}
+
 function startSolrFake( solrResponsesDirectory, portArg, solrRequestRewriterMiddlewareArg ) {
     const db          = require( path.join( __dirname, 'database' ) )( solrResponsesDirectory );
     const router      = jsonServer.router( db );
@@ -54,6 +80,8 @@ function startSolrFake( solrResponsesDirectory, portArg, solrRequestRewriterMidd
               solrRequestRewriterMiddlewareArg || defaultSolrRequestRewriterMiddleware;
 
     server.get( '/select', solrRequestRewriterMiddleware );
+
+    router.render = defaultSolrResponseRewriterMilddleware;
 
     server.use( router );
 
