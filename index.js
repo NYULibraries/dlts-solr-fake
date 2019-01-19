@@ -62,7 +62,6 @@ function handler( request, response ) {
 
     const solrResponseString = stringify( solrResponse, { space: '    ' } );
 
-
     response.writeHead( 200, {
         "Content-Type"   : "text/plain;charset=utf-8",
         "Content-Length" : solrResponseString.length,
