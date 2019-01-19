@@ -52,13 +52,21 @@ function handler( request, response ) {
 
     const requestUrl = url.parse( request.url );
 
-    const normalizedQueryString = normalizeQueryString( requestUrl.search );
+    const queryString = requestUrl.search;
 
-    const solrResponse = solrResponses[ normalizedQueryString ] ?
-                         solrResponses[ normalizedQueryString ] :
-                         {
-                            error : `Query string "${ requestUrl.search }" not found in index`
-                         };
+    const normalizedQueryString = normalizeQueryString( queryString );
+
+    let solrResponse = solrResponses[ normalizedQueryString ];
+
+    if ( ! solrResponse ) {
+        const errorMessage = `Query string "${ queryString }" not found in index`;
+
+        solrResponse = {
+            error : errorMessage,
+        };
+
+        console.error( errorMessage );
+    }
 
     const solrResponseString = stringify( solrResponse, { space: '    ' } );
 
