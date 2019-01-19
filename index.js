@@ -1,59 +1,75 @@
-const path = require( 'path' );
+const http      = require( 'http' );
+const path      = require( 'path' );
+const url       = require( 'url' );
 
-const jsonServer  = require( 'json-server' );
-const server      = jsonServer.create();
-const middlewares = jsonServer.defaults();
+const stringify = require( 'json-stable-stringify' );
 
 const DEFAULT_PORT = 3000;
 
-server.use( middlewares );
+let solrResponses;
 
-function defaultSolrRequestRewriterMiddleware( req, res, next ) {
-    const query = {
-        'responseHeader.params.q'              : req.query[ 'q' ],
-        'responseHeader.params.facet.field'    : req.query[ 'facet.field' ],
-        'responseHeader.params.facet.limit'    : req.query[ 'facet.limit' ],
-        'responseHeader.params.facet.mincount' : req.query[ 'facet.mincount' ],
-        'responseHeader.params.facet.sort'     : req.query[ 'facet.sort' ],
-        'responseHeader.params.facet'          : req.query[ 'facet' ],
-        'responseHeader.params.fl'             : req.query[ 'fl' ],
-        'responseHeader.params.group.field'    : req.query[ 'group.field' ],
-        'responseHeader.params.group'          : req.query[ 'group' ],
-        'responseHeader.params.group.limit'    : req.query[ 'group.limit' ],
-        'responseHeader.params.qf'             : req.query[ 'qf' ],
-        'responseHeader.params.rows'           : req.query[ 'rows' ],
-        'responseHeader.params.sort'           : req.query[ 'sort' ],
-        'responseHeader.params.defType'        : req.query[ 'defType' ],
-        'responseHeader.params.indent'         : req.query[ 'indent' ],
-        'responseHeader.params.wt'             : req.query[ 'wt' ],
-    };
-
-    Object.getOwnPropertyNames( req.query ).forEach( prop => {
-        delete req.query[ prop ];
-    } );
-
-    Object.getOwnPropertyNames( query ).forEach( prop => {
-        req.query[ prop ] = query[ prop ];
-    } );
-
-    next();
-}
-
-function startSolrFake( solrResponsesDirectory, portArg, solrRequestRewriterMiddlewareArg ) {
-    const db          = require( path.join( __dirname, 'database' ) )( solrResponsesDirectory );
-    const router      = jsonServer.router( db );
+function startSolrFake( solrResponsesIndex, solrResponsesDirectory, portArg ) {
+    solrResponses = getSolrResponses( solrResponsesIndex, solrResponsesDirectory );
 
     const port = portArg || DEFAULT_PORT;
-    const solrRequestRewriterMiddleware =
-              solrRequestRewriterMiddlewareArg || defaultSolrRequestRewriterMiddleware;
 
-    server.get( '/select', solrRequestRewriterMiddleware );
+    http.createServer( handler ).listen( port )
+        .on( 'listening', () => {
+            console.log( 'Solr fake is running on port ' + port );
+        } )
+        .on( 'error', ( e ) => {
+            console.error( e );
+        } );
+}
 
-    server.use( router );
+function getSolrResponses( solrResponsesIndex, solrResponsesDirectory ) {
+    const data = {};
 
-    server.listen( port, () => {
-        console.log( 'JSON Server Solr fake is running on port ' + port );
+    const index = require( solrResponsesIndex );
+
+    Object.keys( index ).forEach( queryString => {
+        const file = path.join( solrResponsesDirectory, index[ queryString ] );
+
+        const response = require( file );
+
+        data[ normalizeQueryString( queryString ) ] = response;
     } );
+
+    return data;
+}
+
+function normalizeQueryString( queryString ) {
+    queryString = decodeURI( queryString );
+
+    const urlSearchParams = new URLSearchParams( decodeURI( queryString ) );
+
+    urlSearchParams.sort();
+
+    return '?' + urlSearchParams.toString();
+}
+
+function handler( request, response ) {
+
+    const requestUrl = url.parse( request.url );
+
+    const normalizedQueryString = normalizeQueryString( requestUrl.search );
+
+    const solrResponse = solrResponses[ normalizedQueryString ] ?
+                         solrResponses[ normalizedQueryString ] :
+                         {
+                            error : `Query string "${ normalizedQueryString }" not found in index`
+                         };
+
+    const solrResponseString = stringify( solrResponse, { space: '    ' } );
+
+
+    response.writeHead( 200, {
+        "Content-Type"   : "text/plain;charset=utf-8",
+        "Content-Length" : solrResponseString.length,
+    } );
+
+    response.write( solrResponseString );
+    response.end();
 }
 
 module.exports.startSolrFake = startSolrFake;
