@@ -54,6 +54,10 @@ function handler( request, response ) {
 
     const queryString = requestUrl.search;
 
+    if ( ! queryString ) {
+        return;
+    }
+
     const normalizedQueryString = normalizeQueryString( queryString );
 
     let solrResponse = solrResponses[ normalizedQueryString ];
