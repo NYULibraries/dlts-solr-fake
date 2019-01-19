@@ -57,7 +57,7 @@ function handler( request, response ) {
     const solrResponse = solrResponses[ normalizedQueryString ] ?
                          solrResponses[ normalizedQueryString ] :
                          {
-                            error : `Query string "${ normalizedQueryString }" not found in index`
+                            error : `Query string "${ requestUrl.search }" not found in index`
                          };
 
     const solrResponseString = stringify( solrResponse, { space: '    ' } );
