@@ -107,12 +107,9 @@ function startSolrFake(
     solrResponsesIndex = solrResponsesIndexArg;
     solrResponsesDirectory = solrResponsesDirectoryArg;
 
-    solrResponses = getSolrResponses( solrResponsesIndex, solrResponsesDirectory );
-
     const port = portArg || DEFAULT_PORT;
 
-    let handler = normalHandler;
-
+    let handler;
     if ( updateSolrResponsesSolrServerUrlArg  ) {
         updateSolrResponsesSolrServerUrl = updateSolrResponsesSolrServerUrlArg;
 
@@ -120,6 +117,10 @@ function startSolrFake(
         console.log( `Solr server = ${ updateSolrResponsesSolrServerUrl }` );
 
         handler = updateSolrResponsesHandler;
+    } else {
+        solrResponses = getSolrResponses( solrResponsesIndex, solrResponsesDirectory );
+
+        handler = normalHandler;
     }
 
     http.createServer( handler ).listen( port )
