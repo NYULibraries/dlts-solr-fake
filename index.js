@@ -7,9 +7,11 @@ const stringify = require( 'json-stable-stringify' );
 const DEFAULT_PORT = 3000;
 
 let solrResponses;
+let solrResponsesIndex;
+let solrResponsesDirectory;
 let updateSolrResponsesSolrServerUrl;
 
-function getSolrResponses( solrResponsesIndex, solrResponsesDirectory ) {
+function getSolrResponses() {
     const data = {};
 
     const index = require( solrResponsesIndex );
@@ -70,10 +72,13 @@ function normalizeQueryString( queryString ) {
 }
 
 function startSolrFake(
-    solrResponsesIndex,
-    solrResponsesDirectory,
+    solrResponsesIndexArg,
+    solrResponsesDirectoryArg,
     portArg,
     updateSolrResponsesSolrServerUrlArg ) {
+
+    solrResponsesIndex = solrResponsesIndexArg;
+    solrResponsesDirectory = solrResponsesDirectoryArg;
 
     solrResponses = getSolrResponses( solrResponsesIndex, solrResponsesDirectory );
 
