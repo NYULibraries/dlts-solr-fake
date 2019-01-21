@@ -26,7 +26,6 @@ function getSolrResponses( solrResponsesIndex, solrResponsesDirectory ) {
 }
 
 function normalHandler( request, response ) {
-
     const requestUrl = url.parse( request.url );
 
     const queryString = requestUrl.search;
