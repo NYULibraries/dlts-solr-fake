@@ -9,36 +9,6 @@ const DEFAULT_PORT = 3000;
 let solrResponses;
 let updateSolrResponsesSolrServerUrl;
 
-function startSolrFake(
-    solrResponsesIndex,
-    solrResponsesDirectory,
-    portArg,
-    updateSolrResponsesSolrServerUrlArg ) {
-
-    solrResponses = getSolrResponses( solrResponsesIndex, solrResponsesDirectory );
-
-    const port = portArg || DEFAULT_PORT;
-
-    let handler = normalHandler;
-
-    if ( updateSolrResponsesSolrServerUrlArg  ) {
-        updateSolrResponsesSolrServerUrl = updateSolrResponsesSolrServerUrlArg;
-
-        console.log( 'Switching to update Solr responses mode' );
-        console.log( `Solr server = ${ updateSolrResponsesSolrServerUrl }` );
-
-        handler = updateSolrResponsesHandler;
-    }
-
-    http.createServer( handler ).listen( port )
-        .on( 'listening', () => {
-            console.log( 'Solr fake is running on port ' + port );
-        } )
-        .on( 'error', ( e ) => {
-            console.error( e );
-        } );
-}
-
 function getSolrResponses( solrResponsesIndex, solrResponsesDirectory ) {
     const data = {};
 
@@ -53,16 +23,6 @@ function getSolrResponses( solrResponsesIndex, solrResponsesDirectory ) {
     } );
 
     return data;
-}
-
-function normalizeQueryString( queryString ) {
-    queryString = decodeURI( queryString );
-
-    const urlSearchParams = new URLSearchParams( decodeURI( queryString ) );
-
-    urlSearchParams.sort();
-
-    return '?' + urlSearchParams.toString();
 }
 
 function normalHandler( request, response ) {
@@ -98,6 +58,46 @@ function normalHandler( request, response ) {
 
     response.write( solrResponseString );
     response.end();
+}
+
+function normalizeQueryString( queryString ) {
+    queryString = decodeURI( queryString );
+
+    const urlSearchParams = new URLSearchParams( decodeURI( queryString ) );
+
+    urlSearchParams.sort();
+
+    return '?' + urlSearchParams.toString();
+}
+
+function startSolrFake(
+    solrResponsesIndex,
+    solrResponsesDirectory,
+    portArg,
+    updateSolrResponsesSolrServerUrlArg ) {
+
+    solrResponses = getSolrResponses( solrResponsesIndex, solrResponsesDirectory );
+
+    const port = portArg || DEFAULT_PORT;
+
+    let handler = normalHandler;
+
+    if ( updateSolrResponsesSolrServerUrlArg  ) {
+        updateSolrResponsesSolrServerUrl = updateSolrResponsesSolrServerUrlArg;
+
+        console.log( 'Switching to update Solr responses mode' );
+        console.log( `Solr server = ${ updateSolrResponsesSolrServerUrl }` );
+
+        handler = updateSolrResponsesHandler;
+    }
+
+    http.createServer( handler ).listen( port )
+        .on( 'listening', () => {
+            console.log( 'Solr fake is running on port ' + port );
+        } )
+        .on( 'error', ( e ) => {
+            console.error( e );
+        } );
 }
 
 function updateSolrResponsesHandler( request, response ) {
