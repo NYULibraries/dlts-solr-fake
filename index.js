@@ -19,11 +19,15 @@ function startSolrFake(
 
     const port = portArg || DEFAULT_PORT;
 
+    let handler = normalHandler;
+
     if ( updateSolrResponsesSolrServerUrlArg  ) {
         updateSolrResponsesSolrServerUrl = updateSolrResponsesSolrServerUrlArg;
 
         console.log( 'Switching to update Solr responses mode' );
         console.log( `Solr server = ${ updateSolrResponsesSolrServerUrl }` );
+
+        handler = updateSolrResponsesHandler;
     }
 
     http.createServer( handler ).listen( port )
@@ -61,7 +65,7 @@ function normalizeQueryString( queryString ) {
     return '?' + urlSearchParams.toString();
 }
 
-function handler( request, response ) {
+function normalHandler( request, response ) {
 
     const requestUrl = url.parse( request.url );
 
@@ -93,6 +97,11 @@ function handler( request, response ) {
     } );
 
     response.write( solrResponseString );
+    response.end();
+}
+
+function updateSolrResponsesHandler( request, response ) {
+    response.write( 'update!' );
     response.end();
 }
 
