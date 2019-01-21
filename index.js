@@ -11,13 +11,16 @@ let solrResponsesIndex;
 let solrResponsesDirectory;
 let updateSolrResponsesSolrServerUrl;
 
+function getSolrResponseFilePath( responseFile ) {
+    return path.join( solrResponsesDirectory, responseFile )
+}
 function getSolrResponses() {
     const data = {};
 
     const index = require( solrResponsesIndex );
 
     Object.keys( index ).forEach( queryString => {
-        const file = path.join( solrResponsesDirectory, index[ queryString ] );
+        const file = getSolrResponseFilePath( index[ queryString ] );
 
         const response = require( file );
 
