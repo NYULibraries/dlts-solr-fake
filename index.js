@@ -7,11 +7,24 @@ const stringify = require( 'json-stable-stringify' );
 const DEFAULT_PORT = 3000;
 
 let solrResponses;
+let updateSolrResponsesSolrServerUrl;
 
-function startSolrFake( solrResponsesIndex, solrResponsesDirectory, portArg ) {
+function startSolrFake(
+    solrResponsesIndex,
+    solrResponsesDirectory,
+    portArg,
+    updateSolrResponsesSolrServerUrlArg ) {
+
     solrResponses = getSolrResponses( solrResponsesIndex, solrResponsesDirectory );
 
     const port = portArg || DEFAULT_PORT;
+
+    if ( updateSolrResponsesSolrServerUrlArg  ) {
+        updateSolrResponsesSolrServerUrl = updateSolrResponsesSolrServerUrlArg;
+
+        console.log( 'Switching to update Solr responses mode' );
+        console.log( `Solr server = ${ updateSolrResponsesSolrServerUrl }` );
+    }
 
     http.createServer( handler ).listen( port )
         .on( 'listening', () => {
