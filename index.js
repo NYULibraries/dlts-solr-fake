@@ -2,6 +2,7 @@ const axios     = require( 'axios' );
 const crypto    = require( 'crypto' );
 const fs        = require( 'fs' );
 const http      = require( 'http' );
+const moment    = require( 'moment' );
 const path      = require( 'path' );
 const url       = require( 'url' );
 
@@ -177,5 +178,22 @@ async function updateSolrResponsesHandler( request, response ) {
     response.write( solrResponseString );
     response.end();
 }
+
+function handle( signal, code ) {
+    const timestamp = moment( new Date() ).format( "ddd, D MMM YYYY H:m:s " ) + 'EST';
+
+    console.log( `Received ${ signal } at ${ timestamp }` );
+
+    process.exit( code );
+}
+
+process.on( 'SIGINT', handle );
+process.on( 'SIGTERM', handle );
+
+process.on( 'exit', ( code ) => {
+    const timestamp = moment( new Date() ).format( "ddd, D MMM YYYY H:m:s " ) + 'EST';
+
+    console.log( `Exited with code ${ code } at ${ timestamp }` );
+} );
 
 module.exports.startSolrFake = startSolrFake;
