@@ -179,7 +179,7 @@ async function updateSolrResponsesHandler( request, response ) {
     response.end();
 }
 
-function handle( signal, code ) {
+function signalEventHandler( signal, code ) {
     const timestamp = moment( new Date() ).format( "ddd, D MMM YYYY H:m:s " ) + 'EST';
 
     console.log( `Received ${ signal } at ${ timestamp }` );
@@ -187,8 +187,8 @@ function handle( signal, code ) {
     process.exit( code );
 }
 
-process.on( 'SIGINT', handle );
-process.on( 'SIGTERM', handle );
+process.on( 'SIGINT', signalEventHandler );
+process.on( 'SIGTERM', signalEventHandler );
 
 process.on( 'exit', ( code ) => {
     const timestamp = moment( new Date() ).format( "ddd, D MMM YYYY H:m:s " ) + 'EST';
