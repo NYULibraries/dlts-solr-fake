@@ -123,6 +123,7 @@ function startSolrFake(
     solrResponsesIndexArg,
     solrResponsesDirectoryArg,
     portArg,
+    logfile,
     updateSolrResponsesSolrServerUrlArg ) {
 
     solrResponsesIndex = solrResponsesIndexArg;
