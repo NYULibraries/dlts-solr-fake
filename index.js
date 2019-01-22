@@ -130,12 +130,16 @@ function signalEventHandler( signal, code ) {
 function startSolrFake(
     solrResponsesIndexArg,
     solrResponsesDirectoryArg,
-    logfile,
+    logfileArg,
     portArg,
     updateSolrResponsesSolrServerUrlArg ) {
 
     solrResponsesIndex = solrResponsesIndexArg;
     solrResponsesDirectory = solrResponsesDirectoryArg;
+
+    if ( logfileArg ) {
+        logger.add( new transports.File( { filename : logfileArg } ) );
+    }
 
     const port = portArg || DEFAULT_PORT;
 
@@ -208,7 +212,7 @@ async function updateSolrResponsesHandler( request, response ) {
 }
 
 function timestampEST() {
-    return moment( new Date() ).format( "ddd, D MMM YYYY H:m:s " ) + 'EST';
+    return moment( new Date() ).format( 'ddd, D MMM YYYY H:m:s ' ) + 'EST';
 }
 
 process.on( 'SIGINT', signalEventHandler );
