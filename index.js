@@ -215,7 +215,7 @@ process.on( 'SIGINT', signalEventHandler );
 process.on( 'SIGTERM', signalEventHandler );
 
 process.on( 'exit', ( code ) => {
-    const timestamp = moment( new Date() ).format( "ddd, D MMM YYYY H:m:s " ) + 'EST';
+    const timestamp = timestampEST();
 
     logger.info( `Exited with code ${ code } at ${ timestamp }` );
 } );
