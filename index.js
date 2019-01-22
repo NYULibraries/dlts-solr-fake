@@ -104,6 +104,8 @@ function normalHandler( request, response ) {
 
     response.write( solrResponseString );
 
+    logger.info( `request = "${ queryString }` );
+
     response.end();
 }
 
