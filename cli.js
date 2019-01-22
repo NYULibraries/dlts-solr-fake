@@ -14,8 +14,8 @@ if ( solrResponsesDirectory ) {
     solrResponsesDirectory = fs.realpathSync( solrResponsesDirectory );
 }
 
-let port = argv.port || undefined;
+const port = argv.port || undefined;
 
-let updateSolrResponsesSolrServerUrl = argv[ 'update-solr-responses-solr-server-url' ] || undefined;
+const updateSolrResponsesSolrServerUrl = argv[ 'update-solr-responses-solr-server-url' ] || undefined;
 
 solrFake.startSolrFake( solrResponsesIndex, solrResponsesDirectory, port, updateSolrResponsesSolrServerUrl );
