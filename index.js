@@ -21,7 +21,7 @@ let updateSolrResponsesSolrServerUrl;
 const customFormat = printf( info => {
     const timestamp = timestampEST();
 
-    return `${ timestamp } ${ info.level }: ${ info.message }`;
+    return `${ timestamp } [${ info.level }]: ${ info.message }`;
 } );
 
 const logger = createLogger( {
