@@ -119,6 +119,14 @@ function normalizeQueryString( queryString ) {
     return '?' + urlSearchParams.toString();
 }
 
+function signalEventHandler( signal, code ) {
+    const timestamp = moment( new Date() ).format( "ddd, D MMM YYYY H:m:s " ) + 'EST';
+
+    logger.info( `Received ${ signal } at ${ timestamp }` );
+
+    process.exit( code );
+}
+
 function startSolrFake(
     solrResponsesIndexArg,
     solrResponsesDirectoryArg,
@@ -197,14 +205,6 @@ async function updateSolrResponsesHandler( request, response ) {
 
     response.write( solrResponseString );
     response.end();
-}
-
-function signalEventHandler( signal, code ) {
-    const timestamp = moment( new Date() ).format( "ddd, D MMM YYYY H:m:s " ) + 'EST';
-
-    logger.info( `Received ${ signal } at ${ timestamp }` );
-
-    process.exit( code );
 }
 
 function timestampEST() {
