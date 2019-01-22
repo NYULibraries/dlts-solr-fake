@@ -52,7 +52,7 @@ async function getSolrResponseFromLiveSolr( queryString ) {
 
         return response.data;
     } catch( error ) {
-        console.error( error );
+        logger.error( error );
     }
 }
 
@@ -92,7 +92,7 @@ function normalHandler( request, response ) {
             error : errorMessage,
         };
 
-        console.error( errorMessage );
+        logger.error( errorMessage );
     }
 
     const solrResponseString = stringify( solrResponse, { space: '    ' } );
@@ -103,6 +103,7 @@ function normalHandler( request, response ) {
     } );
 
     response.write( solrResponseString );
+
     response.end();
 }
 
@@ -131,8 +132,8 @@ function startSolrFake(
     if ( updateSolrResponsesSolrServerUrlArg  ) {
         updateSolrResponsesSolrServerUrl = updateSolrResponsesSolrServerUrlArg;
 
-        console.log( 'Switching to update Solr responses mode' );
-        console.log( `Solr server = ${ updateSolrResponsesSolrServerUrl }` );
+        logger.info( 'Switching to update Solr responses mode' );
+        logger.info( `Solr server = ${ updateSolrResponsesSolrServerUrl }` );
 
         handler = updateSolrResponsesHandler;
     } else {
@@ -143,10 +144,10 @@ function startSolrFake(
 
     http.createServer( handler ).listen( port )
         .on( 'listening', () => {
-            console.log( 'Solr fake is running on port ' + port );
+            logger.info( 'Solr fake is running on port ' + port );
         } )
         .on( 'error', ( e ) => {
-            console.error( e );
+            logger.error( e );
         } );
 }
 
@@ -166,7 +167,7 @@ function updateSolrResponses( queryString, solrResponse ) {
 
     fs.writeFileSync( solrResponsesIndex, stableStringify( index ) );
 
-    console.log( `Updated Solr response "${ queryString }" : ${ responseFilename }` );
+    logger.info( `Updated Solr response "${ queryString }" : ${ responseFilename }` );
 }
 
 async function updateSolrResponsesHandler( request, response ) {
@@ -198,7 +199,7 @@ async function updateSolrResponsesHandler( request, response ) {
 function signalEventHandler( signal, code ) {
     const timestamp = moment( new Date() ).format( "ddd, D MMM YYYY H:m:s " ) + 'EST';
 
-    console.log( `Received ${ signal } at ${ timestamp }` );
+    logger.info( `Received ${ signal } at ${ timestamp }` );
 
     process.exit( code );
 }
@@ -213,7 +214,7 @@ process.on( 'SIGTERM', signalEventHandler );
 process.on( 'exit', ( code ) => {
     const timestamp = moment( new Date() ).format( "ddd, D MMM YYYY H:m:s " ) + 'EST';
 
-    console.log( `Exited with code ${ code } at ${ timestamp }` );
+    logger.info( `Exited with code ${ code } at ${ timestamp }` );
 } );
 
 module.exports.startSolrFake = startSolrFake;
