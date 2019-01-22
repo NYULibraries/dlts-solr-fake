@@ -164,7 +164,7 @@ async function updateSolrResponsesHandler( request, response ) {
 
     const normalizedQueryString = normalizeQueryString( queryString );
 
-    let solrResponse = await getSolrResponseFromLiveSolr( normalizedQueryString );
+    const solrResponse = await getSolrResponseFromLiveSolr( normalizedQueryString );
 
     const solrResponseString = stableStringify( solrResponse );
 
