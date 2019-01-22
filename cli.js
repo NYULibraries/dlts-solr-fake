@@ -23,7 +23,7 @@ const updateSolrResponsesSolrServerUrl = argv[ 'update-solr-responses-solr-serve
 solrFake.startSolrFake(
     solrResponsesIndex,
     solrResponsesDirectory,
-    port,
     logfile,
+    port,
     updateSolrResponsesSolrServerUrl
 );

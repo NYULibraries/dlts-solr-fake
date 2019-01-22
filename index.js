@@ -130,8 +130,8 @@ function signalEventHandler( signal, code ) {
 function startSolrFake(
     solrResponsesIndexArg,
     solrResponsesDirectoryArg,
-    portArg,
     logfile,
+    portArg,
     updateSolrResponsesSolrServerUrlArg ) {
 
     solrResponsesIndex = solrResponsesIndexArg;
