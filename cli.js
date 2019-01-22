@@ -20,4 +20,10 @@ const logfile = argv.logfile || undefined;
 
 const updateSolrResponsesSolrServerUrl = argv[ 'update-solr-responses-solr-server-url' ] || undefined;
 
-solrFake.startSolrFake( solrResponsesIndex, solrResponsesDirectory, port, logfile, updateSolrResponsesSolrServerUrl );
+solrFake.startSolrFake(
+    solrResponsesIndex,
+    solrResponsesDirectory,
+    port,
+    logfile,
+    updateSolrResponsesSolrServerUrl
+);
