@@ -6,6 +6,9 @@ const moment    = require( 'moment' );
 const path      = require( 'path' );
 const url       = require( 'url' );
 
+const { createLogger, format, transports } = require( 'winston' );
+const { combine, timestamp, label, printf } = format;
+
 const stringify = require( 'json-stable-stringify' );
 
 const DEFAULT_PORT = 3000;
@@ -14,6 +17,20 @@ let solrResponses;
 let solrResponsesIndex;
 let solrResponsesDirectory;
 let updateSolrResponsesSolrServerUrl;
+
+const customFormat = printf( info => {
+    const timestamp = timestampEST();
+
+    return `${ timestamp } ${ info.level }: ${ info.message }`;
+} );
+
+const logger = createLogger( {
+    level : 'info',
+    format: customFormat,
+    transports : [
+        new transports.Console(),
+    ],
+} );
 
 function getSolrResponseFilename( queryString ) {
     const hash = crypto.createHmac( 'sha256', queryString )
@@ -184,6 +201,10 @@ function signalEventHandler( signal, code ) {
     console.log( `Received ${ signal } at ${ timestamp }` );
 
     process.exit( code );
+}
+
+function timestampEST() {
+    return moment( new Date() ).format( "ddd, D MMM YYYY H:m:s " ) + 'EST';
 }
 
 process.on( 'SIGINT', signalEventHandler );
