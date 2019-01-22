@@ -149,8 +149,7 @@ function updateSolrResponses( queryString, solrResponse ) {
 
     fs.writeFileSync( solrResponsesIndex, stableStringify( index ) );
 
-    console.log( 'Updated Solr responses: ' );
-    console.log( `"${ queryString } : ${ responseFilename }` );
+    console.log( `Updated Solr response "${ queryString }" : ${ responseFilename }` );
 }
 
 async function updateSolrResponsesHandler( request, response ) {
