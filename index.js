@@ -24,7 +24,7 @@ const customFormat = printf( info => {
     return `${ timestamp } [${ info.level }]: ${ info.message }`;
 } );
 
-const logdir = path.join( '/tmp', 'solr-fake/' );
+const logdir = path.join( '/tmp', 'solr-fake-logs/' );
 
 if ( ! fs.existsSync( logdir ) ) {
     fs.mkdirSync( logdir );
