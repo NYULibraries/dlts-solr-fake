@@ -158,6 +158,8 @@ function startSolrFake(
     verbose,
     ) {
 
+    console.log( 'Logging to ' + logfile );
+
     if ( verbose ) {
         logger.add( new transports.Console() );
     }
@@ -188,6 +190,10 @@ function startSolrFake(
         .on( 'error', ( e ) => {
             logger.error( e );
         } );
+
+    process.on( 'SIGINT', signalEventHandler );
+    process.on( 'SIGTERM', signalEventHandler );
+    process.on( 'exit', exitHandler );
 }
 
 function stableStringify( data ) {
@@ -238,10 +244,5 @@ async function updateSolrResponsesHandler( request, response ) {
 function timestampEST() {
     return moment( new Date() ).format( 'ddd, D MMM YYYY H:m:s ' ) + 'EST';
 }
-
-process.on( 'SIGINT', signalEventHandler );
-process.on( 'SIGTERM', signalEventHandler );
-
-process.on( 'exit', exitHandler );
 
 module.exports.startSolrFake = startSolrFake;
