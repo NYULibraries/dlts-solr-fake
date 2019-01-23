@@ -24,7 +24,16 @@ const customFormat = printf( info => {
     return `${ timestamp } [${ info.level }]: ${ info.message }`;
 } );
 
-let logger;
+const logfile = getLogfile();
+const logger = createLogger( {
+                           level : 'info',
+                           format: customFormat,
+                           transports : [
+                               new transports.File( { filename : logfile } ),
+                           ],
+                       } );
+
+console.log( 'Logging to ' + logfile );
 
 function getLogfile() {
     return path.join(
@@ -134,17 +143,6 @@ function startSolrFake(
     updateSolrResponsesSolrServerUrlArg,
     verbose,
     ) {
-
-    const logfile = getLogfile();
-    logger = createLogger( {
-                                     level : 'info',
-                                     format: customFormat,
-                                     transports : [
-                                         new transports.File( { filename : logfile } ),
-                                     ],
-                                 } );
-
-    console.log( 'Logging to ' + logfile );
 
     if ( verbose ) {
         logger.add( new transports.Console() );
