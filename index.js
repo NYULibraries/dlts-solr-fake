@@ -144,7 +144,11 @@ function startSolrFake(
     solrResponsesDirectory = solrResponsesDirectoryArg;
 
     if ( logfileArg ) {
-        logger.add( new transports.File( { filename : logfileArg } ) );
+        const logfile = getLogfile();
+
+        logger.info( 'Logging to ' + logfile );
+
+        logger.add( new transports.File( { filename : logfile } ) );
     }
 
     const port = portArg || DEFAULT_PORT;
