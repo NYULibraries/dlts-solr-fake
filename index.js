@@ -32,6 +32,12 @@ const logger = createLogger( {
     ],
 } );
 
+function getLogfile() {
+    return path.join(
+        '/tmp',
+        'solr-fake-' + moment( new Date() ).format( 'YYYY-MM-DDTHH-mm-ss' ) ) + '.log';
+}
+
 function getSolrResponseFilename( queryString ) {
     const hash = crypto.createHmac( 'sha256', queryString )
         .update( queryString )
