@@ -30,7 +30,8 @@ if ( ! fs.existsSync( logdir ) ) {
     fs.mkdirSync( logdir );
 }
 
-const logfile = getLogfile();
+const logfile = getLogfile( logdir );
+
 const logger = createLogger( {
                            level : 'info',
                            format: customFormat,
@@ -41,10 +42,11 @@ const logger = createLogger( {
 
 console.log( 'Logging to ' + logfile );
 
-function getLogfile() {
+function getLogfile( logdir ) {
     return path.join(
-        '/tmp',
-        'solr-fake-' + moment( new Date() ).format( 'YYYY-MM-DDTHH-mm-ss' ) ) + '.log';
+        logdir,
+        'solr-fake-' + moment( new Date() ).format( 'YYYY-MM-DDTHH-mm-ss' )
+    ) + '.log';
 }
 
 function getSolrResponseFilename( queryString ) {
