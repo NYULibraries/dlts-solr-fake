@@ -24,13 +24,7 @@ const customFormat = printf( info => {
     return `${ timestamp } [${ info.level }]: ${ info.message }`;
 } );
 
-const logger = createLogger( {
-    level : 'info',
-    format: customFormat,
-    transports : [
-        new transports.Console(),
-    ],
-} );
+let logger;
 
 function getLogfile() {
     return path.join(
@@ -136,20 +130,28 @@ function signalEventHandler( signal, code ) {
 function startSolrFake(
     solrResponsesIndexArg,
     solrResponsesDirectoryArg,
-    logfileArg,
     portArg,
-    updateSolrResponsesSolrServerUrlArg ) {
+    updateSolrResponsesSolrServerUrlArg,
+    verbose,
+    ) {
+
+    const logfile = getLogfile();
+    logger = createLogger( {
+                                     level : 'info',
+                                     format: customFormat,
+                                     transports : [
+                                         new transports.File( { filename : logfile } ),
+                                     ],
+                                 } );
+
+    console.log( 'Logging to ' + logfile );
+
+    if ( verbose ) {
+        logger.add( new transports.Console() );
+    }
 
     solrResponsesIndex = solrResponsesIndexArg;
     solrResponsesDirectory = solrResponsesDirectoryArg;
-
-    if ( logfileArg ) {
-        const logfile = getLogfile();
-
-        logger.info( 'Logging to ' + logfile );
-
-        logger.add( new transports.File( { filename : logfile } ) );
-    }
 
     const port = portArg || DEFAULT_PORT;
 

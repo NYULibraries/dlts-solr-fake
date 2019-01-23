@@ -16,14 +16,14 @@ if ( solrResponsesDirectory ) {
 
 const port = argv.port || undefined;
 
-const logfile = argv.logfile || undefined;
+const verbose = argv.verbose|| undefined;
 
 const updateSolrResponsesSolrServerUrl = argv[ 'update-solr-responses-solr-server-url' ] || undefined;
 
 solrFake.startSolrFake(
     solrResponsesIndex,
     solrResponsesDirectory,
-    logfile,
     port,
-    updateSolrResponsesSolrServerUrl
+    updateSolrResponsesSolrServerUrl,
+    verbose,
 );
