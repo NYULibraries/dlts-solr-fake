@@ -35,14 +35,12 @@ const logfile = getLogfile( logdir );
 // This logger is closed over by the process.on(...) handlers, so this is in
 // global scope where where the handlers are defined.
 const logger = createLogger( {
-                           level : 'info',
-                           format: customFormat,
-                           transports : [
-                               new transports.File( { filename : logfile } ),
-                           ],
-                       } );
-
-console.log( 'Logging to ' + logfile );
+                                 level : 'info',
+                                 format: customFormat,
+                                 transports : [
+                                     new transports.File( { filename : logfile } ),
+                                 ],
+                             } );
 
 function exitHandler( code ) {
     const timestamp = timestampEST();
