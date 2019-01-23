@@ -32,6 +32,8 @@ if ( ! fs.existsSync( logdir ) ) {
 
 const logfile = getLogfile( logdir );
 
+// This logger is closed over by the process.on(...) handlers, so this is in
+// global scope where where the handlers are defined.
 const logger = createLogger( {
                            level : 'info',
                            format: customFormat,
