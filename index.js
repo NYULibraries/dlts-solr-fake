@@ -42,6 +42,12 @@ const logger = createLogger( {
 
 console.log( 'Logging to ' + logfile );
 
+function exitHandler( code ) {
+    const timestamp = timestampEST();
+
+    logger.info( `Exited with code ${ code } at ${ timestamp }` );
+};
+
 function getLogfile( logdir ) {
     return path.join(
         logdir,
@@ -236,10 +242,6 @@ function timestampEST() {
 process.on( 'SIGINT', signalEventHandler );
 process.on( 'SIGTERM', signalEventHandler );
 
-process.on( 'exit', ( code ) => {
-    const timestamp = timestampEST();
-
-    logger.info( `Exited with code ${ code } at ${ timestamp }` );
-} );
+process.on( 'exit', exitHandler );
 
 module.exports.startSolrFake = startSolrFake;
