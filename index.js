@@ -188,7 +188,7 @@ function startSolrFake(
             logger.info( 'Solr fake is running on port ' + port );
         } )
         .on( 'error', ( e ) => {
-            logger.error( e );
+            logger.error( `HTTP server error: ${ e }` );
         } );
 
     process.on( 'SIGINT', signalEventHandler );
