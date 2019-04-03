@@ -13,6 +13,8 @@ const stringify = require( 'json-stable-stringify' );
 
 const DEFAULT_PORT = 3000;
 
+const INDEX_FILE = 'index.json';
+
 let solrResponses;
 let solrResponsesIndex;
 let solrResponsesDirectory;
@@ -149,7 +151,6 @@ function signalEventHandler( signal, code ) {
 }
 
 function startSolrFake(
-    solrResponsesIndexArg,
     solrResponsesDirectoryArg,
     portArg,
     updateSolrResponsesSolrServerUrlArg,
@@ -162,8 +163,8 @@ function startSolrFake(
         logger.add( new transports.Console() );
     }
 
-    solrResponsesIndex = solrResponsesIndexArg;
     solrResponsesDirectory = solrResponsesDirectoryArg;
+    solrResponsesIndex = path.resolve( solrResponsesDirectory, INDEX_FILE );
 
     const port = portArg || DEFAULT_PORT;
 
@@ -199,7 +200,9 @@ function stableStringify( data ) {
 }
 
 function updateSolrResponses( queryString, solrResponse ) {
-    const index = require( solrResponsesIndex );
+    const index = fs.existsSync( solrResponsesIndex ) ?
+                      require( solrResponsesIndex )   :
+                      {};
 
     const responseFilename = getSolrResponseFilename( queryString );
     const responseFilePath = getSolrResponseFilePath( responseFilename );
