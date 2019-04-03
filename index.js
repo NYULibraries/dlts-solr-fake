@@ -133,8 +133,6 @@ function normalHandler( request, response ) {
 }
 
 function normalizeQueryString( queryString ) {
-    queryString = decodeURI( queryString );
-
     const urlSearchParams = new URLSearchParams( decodeURI( queryString ) );
 
     urlSearchParams.sort();
