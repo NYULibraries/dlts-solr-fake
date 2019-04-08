@@ -16,8 +16,10 @@ const verbose = argv.verbose|| undefined;
 const updateSolrResponsesSolrServerUrl = argv[ 'update-solr-responses-solr-server-url' ] || undefined;
 
 solrFake.startSolrFake(
-    solrResponsesDirectory,
-    port,
-    updateSolrResponsesSolrServerUrl,
-    verbose,
+    {
+        solrResponsesDirectory,
+        port,
+        updateSolrResponsesSolrServerUrl,
+        verbose,
+    }
 );
