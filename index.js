@@ -150,27 +150,22 @@ function signalEventHandler( signal, code ) {
     process.exit( code );
 }
 
-function startSolrFake(
-    solrResponsesDirectoryArg,
-    portArg,
-    updateSolrResponsesSolrServerUrlArg,
-    verbose,
-    ) {
+function startSolrFake( options ) {
 
     console.log( 'Logging to ' + logfile );
 
-    if ( verbose ) {
+    if ( options.verbose ) {
         logger.add( new transports.Console() );
     }
 
-    solrResponsesDirectory = solrResponsesDirectoryArg;
+    solrResponsesDirectory = options.solrResponsesDirectory;
     solrResponsesIndex = path.resolve( solrResponsesDirectory, INDEX_FILE );
 
-    const port = portArg || DEFAULT_PORT;
+    const port = options.port || DEFAULT_PORT;
 
     let handler;
-    if ( updateSolrResponsesSolrServerUrlArg  ) {
-        updateSolrResponsesSolrServerUrl = updateSolrResponsesSolrServerUrlArg;
+    if ( options.updateSolrResponsesSolrServerUrl  ) {
+        updateSolrResponsesSolrServerUrl = options.updateSolrResponsesSolrServerUrl;
 
         logger.info( 'Switching to update Solr responses mode' );
         logger.info( `Solr server = ${ updateSolrResponsesSolrServerUrl }` );
